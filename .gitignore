@@ -22,6 +22,7 @@ output/
 # IDoc data files (mogą zawierać dane wrażliwe)
 *.txt
 !examples/*.txt
+!requirements.txt
 
 # VS Code
 .vscode/

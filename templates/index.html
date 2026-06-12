@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IDoc → Excel</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f0f4f8;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.10);
+    padding: 40px 48px;
+    max-width: 560px;
+    width: 100%;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .logo-icon {
+    width: 44px;
+    height: 44px;
+    background: #1F4E79;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  h1 {
+    font-size: 22px;
+    color: #1F4E79;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  h1 span {
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    color: #6b7280;
+    margin-top: 2px;
+  }
+
+  .drop-zone {
+    border: 2px dashed #93c5fd;
+    border-radius: 10px;
+    padding: 40px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .2s;
+    background: #f8fbff;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: #2E75B6;
+    background: #eff6ff;
+  }
+
+  .drop-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .drop-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+  }
+
+  .drop-zone p {
+    color: #374151;
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+
+  .drop-zone small {
+    color: #9ca3af;
+    font-size: 12px;
+  }
+
+  .file-name {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #1e40af;
+    word-break: break-all;
+  }
+
+  .file-name.visible { display: flex; }
+
+  .file-name .remove {
+    margin-left: auto;
+    cursor: pointer;
+    color: #6b7280;
+    font-size: 18px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    background: #1F4E79;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background .2s;
+  }
+
+  .btn:hover:not(:disabled) { background: #163d61; }
+
+  .btn:disabled {
+    background: #93c5fd;
+    cursor: not-allowed;
+  }
+
+  .status {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: none;
+  }
+
+  .status.error {
+    display: block;
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #b91c1c;
+  }
+
+  .status.loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1d4ed8;
+  }
+
+  .status.success {
+    display: block;
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    color: #15803d;
+  }
+
+  .spinner {
+    width: 18px;
+    height: 18px;
+    border: 3px solid #bfdbfe;
+    border-top-color: #2563eb;
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .info-row {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .badge {
+    background: #f1f5f9;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 12px;
+    color: #475569;
+  }
+
+  .badge strong { color: #1F4E79; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo">
+    <div class="logo-icon">&#x1F4CA;</div>
+    <h1>IDoc &rarr; Excel
+      <span>SAP IDoc flat file &rarr; dokumentacja Excel</span>
+    </h1>
+  </div>
+
+  <form id="convertForm">
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" name="idoc_file" accept=".txt,.idoc">
+      <div class="drop-icon">&#x1F4C4;</div>
+      <p>Przeciągnij plik IDoc tutaj</p>
+      <small>lub kliknij, aby wybrać &nbsp;&bull;&nbsp; .txt, .idoc &nbsp;&bull;&nbsp; maks. 32 MB</small>
+    </div>
+
+    <div class="file-name" id="fileNameBox">
+      <span>&#x1F4CE;</span>
+      <span id="fileNameText"></span>
+      <span class="remove" id="removeFile" title="Usuń plik">&#x2715;</span>
+    </div>
+
+    <button type="submit" class="btn" id="submitBtn" disabled>Konwertuj do Excel</button>
+  </form>
+
+  <div class="status" id="status"></div>
+
+  <div class="info-row">
+    <span class="badge"><strong>ORDERS05</strong> &nbsp;zamówienia</span>
+    <span class="badge"><strong>DELFOR02</strong> &nbsp;harmonogramy</span>
+    <span class="badge">Kodowanie latin-1</span>
+    <span class="badge">3 arkusze Excel</span>
+  </div>
+</div>
+
+<script>
+  const dropZone   = document.getElementById('dropZone');
+  const fileInput  = document.getElementById('fileInput');
+  const fileNameBox= document.getElementById('fileNameBox');
+  const fileNameTxt= document.getElementById('fileNameText');
+  const removeFile = document.getElementById('removeFile');
+  const submitBtn  = document.getElementById('submitBtn');
+  const status     = document.getElementById('status');
+  const form       = document.getElementById('convertForm');
+
+  let selectedFile = null;
+
+  function setFile(file) {
+    if (!file) return;
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (!['txt','idoc'].includes(ext)) {
+      showStatus('error', 'Dozwolone rozszerzenia: .txt, .idoc');
+      return;
+    }
+    selectedFile = file;
+    fileNameTxt.textContent = file.name + ' (' + formatSize(file.size) + ')';
+    fileNameBox.classList.add('visible');
+    submitBtn.disabled = false;
+    hideStatus();
+  }
+
+  function clearFile() {
+    selectedFile = null;
+    fileInput.value = '';
+    fileNameBox.classList.remove('visible');
+    submitBtn.disabled = true;
+    hideStatus();
+  }
+
+  function formatSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1048576) return (bytes/1024).toFixed(1) + ' KB';
+    return (bytes/1048576).toFixed(1) + ' MB';
+  }
+
+  function showStatus(type, msg) {
+    status.className = 'status ' + type;
+    if (type === 'loading') {
+      status.innerHTML = '<div class="spinner"></div><span>' + msg + '</span>';
+    } else {
+      status.textContent = msg;
+    }
+  }
+
+  function hideStatus() {
+    status.className = 'status';
+    status.textContent = '';
+  }
+
+  fileInput.addEventListener('change', () => setFile(fileInput.files[0]));
+  removeFile.addEventListener('click', clearFile);
+
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    setFile(e.dataTransfer.files[0]);
+  });
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!selectedFile) return;
+
+    submitBtn.disabled = true;
+    showStatus('loading', 'Przetwarzanie pliku IDoc…');
+
+    const fd = new FormData();
+    fd.append('idoc_file', selectedFile);
+
+    try {
+      const res = await fetch('/convert', { method: 'POST', body: fd });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        showStatus('error', data.error || 'Błąd serwera (' + res.status + ')');
+        submitBtn.disabled = false;
+        return;
+      }
+
+      // Trigger download
+      const blob = await res.blob();
+      const disposition = res.headers.get('Content-Disposition') || '';
+      const match = disposition.match(/filename[^;=\n]*=(?:(['"])(.+?)\1|([^;\n]*))/i);
+      const fname = match ? (match[2] || match[3]) : selectedFile.name.replace(/\.\w+$/, '_dokumentacja.xlsx');
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = fname; a.click();
+      URL.revokeObjectURL(url);
+
+      showStatus('success', 'Plik Excel gotowy — pobieranie zostało rozpoczęte.');
+      submitBtn.disabled = false;
+
+    } catch (err) {
+      showStatus('error', 'Błąd połączenia: ' + err.message);
+      submitBtn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
