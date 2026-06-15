@@ -761,7 +761,12 @@ def parse_flat(filepath):
             line = line.rstrip('\n')
             if not line.strip():
                 continue
-            rows.append((line[:30].strip(), line[63:]))
+            seg_name = line[:30].strip()
+            try:
+                hlevel = int(line[61:63].strip())
+            except (ValueError, IndexError):
+                hlevel = 0
+            rows.append((seg_name, hlevel, line[63:]))
     return rows
 
 def extract_fields(seg_name, data):
@@ -957,16 +962,24 @@ def build_excel(idoc_rows, out_path):
     ws.title = 'IDoc - Pola i wartości'
     hdr(ws, 1, ['Segment','Wyst.','Nazwa pola (IDoc)','Dług.','Opis pola','Wartość','Znaczenie'])
 
-    seg_counter, r = {}, 2
-    for seg_name, data in idoc_rows:
+    seg_counter, seg_hlevel, seg_order, r = {}, {}, {}, 2
+    order_idx = 0
+    for seg_name, hlevel, data in idoc_rows:
         seg_counter[seg_name] = seg_counter.get(seg_name, 0) + 1
+        if seg_name not in seg_hlevel:
+            seg_hlevel[seg_name] = hlevel
+            seg_order[seg_name] = order_idx
+            order_idx += 1
         occ = seg_counter[seg_name]
+        indent = '  ' * hlevel
         fields = extract_fields(seg_name, data)
         first = True
         for fname, flen, fdesc, val in fields:
             fill = ALT_FILL if r % 2 == 0 else WHT_FILL
             if not val: fill = EMPTY_FILL
-            cell(ws, r, 1, seg_name if first else '', SEG_FILL if first else fill, SEG_FONT if first else NORM_FONT)
+            seg_display = (indent + seg_name) if first else ''
+            cell(ws, r, 1, seg_display, SEG_FILL if first else fill, SEG_FONT if first else NORM_FONT,
+                 Alignment(horizontal='left', vertical='center') if first else Alignment(vertical='center'))
             cell(ws, r, 2, occ if first else '', SEG_FILL if first else fill,
                  SEG_FONT if first else NORM_FONT,
                  Alignment(horizontal='center', vertical='center'))
@@ -989,28 +1002,32 @@ def build_excel(idoc_rows, out_path):
     ws.column_dimensions['G'].width = 35
     ws.freeze_panes = 'A2'
 
-    # Sheet 2 – summary
+    # Sheet 2 – summary (sorted by document order to reflect hierarchy)
     ws2 = wb.create_sheet('Podsumowanie')
-    ws2.merge_cells('A1:C1')
+    ws2.merge_cells('A1:D1')
     ws2['A1'] = 'IDoc – Podsumowanie segmentów'
     ws2['A1'].font = Font(name='Arial', bold=True, size=14, color='1F4E79')
     ws2['A1'].alignment = Alignment(horizontal='center')
-    hdr(ws2, 3, ['Segment','Liczba wystąpień','Opis segmentu'])
+    hdr(ws2, 3, ['Segment (wcięcie = poziom zagnieżdżenia)','Liczba wystąpień','Opis segmentu','Poziom'])
     r2 = 4
-    for seg, cnt in sorted(seg_counter.items(), key=lambda x: -x[1]):
+    for seg, cnt in sorted(seg_counter.items(), key=lambda x: seg_order.get(x[0], 9999)):
         key = get_key(seg)
         desc = SEG_DESC.get(seg, SEG_DESC.get(key, ''))
+        lvl = seg_hlevel.get(seg, 0)
         fill = ALT_FILL if r2 % 2 == 0 else WHT_FILL
-        for col, v in enumerate([seg, cnt, desc], 1):
-            cell(ws2, r2, col, v, fill)
+        cell(ws2, r2, 1, '  ' * lvl + seg, fill, align=Alignment(horizontal='left', vertical='center'))
+        cell(ws2, r2, 2, cnt, fill, align=Alignment(horizontal='center', vertical='center'))
+        cell(ws2, r2, 3, desc, fill)
+        cell(ws2, r2, 4, lvl, fill, align=Alignment(horizontal='center', vertical='center'))
         r2 += 1
-    ws2.column_dimensions['A'].width = 22
+    ws2.column_dimensions['A'].width = 28
     ws2.column_dimensions['B'].width = 18
-    ws2.column_dimensions['C'].width = 55
+    ws2.column_dimensions['C'].width = 50
+    ws2.column_dimensions['D'].width = 10
     ws2.freeze_panes = 'A4'
 
     # Sheet 3 – positions (only if E2EDP01 present)
-    has_positions = any(s.startswith('E2EDP01') for s, _ in idoc_rows)
+    has_positions = any(row[0].startswith('E2EDP01') for row in idoc_rows)
     if has_positions:
         ws3 = wb.create_sheet('Pozycje zamówienia')
         ws3.merge_cells('A1:I1')
@@ -1020,7 +1037,7 @@ def build_excel(idoc_rows, out_path):
         hdr(ws3, 3, ['Poz.','Materiał (IDTNR)','Opis materiału','Ilość','JM','Cena jedn.','Wartość netto','Data dostawy','Zakład'])
 
         positions, delivery_dates, materials, cur = {}, {}, {}, None
-        for seg_name, data in idoc_rows:
+        for seg_name, hlevel, data in idoc_rows:
             if seg_name.startswith('E2EDP01'):
                 posex = data[0:6].strip(); cur = posex
                 positions[posex] = {
