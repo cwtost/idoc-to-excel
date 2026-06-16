@@ -1,8 +1,9 @@
 import os
 import io
+import base64
 import tempfile
-from flask import Flask, render_template, request, send_file, jsonify
-from idoc_parser import parse_flat, build_excel
+from flask import Flask, render_template, request, jsonify
+from idoc_parser import parse_flat, build_excel, build_preview_data
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # 32 MB
@@ -32,7 +33,6 @@ def convert():
         return jsonify(error='Dozwolone rozszerzenia: .txt, .idoc'), 400
 
     try:
-        # Save upload to a temp file (parse_flat needs a path)
         with tempfile.NamedTemporaryFile(suffix='.txt', delete=False) as tmp:
             f.save(tmp.name)
             tmp_path = tmp.name
@@ -42,20 +42,19 @@ def convert():
             os.unlink(tmp_path)
             return jsonify(error='Plik jest pusty lub nie zawiera danych IDoc.'), 400
 
-        # Build Excel into a BytesIO buffer
         buf = io.BytesIO()
         build_excel(rows, buf)
         buf.seek(0)
+        xlsx_b64 = base64.b64encode(buf.read()).decode('ascii')
 
+        preview = build_preview_data(rows)
         os.unlink(tmp_path)
 
-        base = os.path.splitext(f.filename)[0]
-        xlsx_name = f"{base}_dokumentacja.xlsx"
-        return send_file(
-            buf,
-            as_attachment=True,
-            download_name=xlsx_name,
-            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        base_name = os.path.splitext(f.filename)[0]
+        return jsonify(
+            filename=f"{base_name}_dokumentacja.xlsx",
+            xlsx_b64=xlsx_b64,
+            **preview
         )
 
     except Exception as e:

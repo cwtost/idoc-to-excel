@@ -9,14 +9,16 @@
 
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
-    background: #000000;
+    background: #000;
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
     padding: 24px;
+    gap: 24px;
   }
 
+  /* ── Upload card ── */
   .card {
     background: #fff;
     border-radius: 12px;
@@ -26,192 +28,227 @@
     width: 100%;
   }
 
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 28px;
-  }
-
+  .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
   .logo-icon {
-    width: 44px;
-    height: 44px;
-    background: #1F4E79;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 22px;
-    flex-shrink: 0;
+    width: 44px; height: 44px; background: #1F4E79; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 22px; flex-shrink: 0;
   }
-
-  h1 {
-    font-size: 22px;
-    color: #1F4E79;
-    font-weight: 700;
-    line-height: 1.2;
-  }
-
-  h1 span {
-    display: block;
-    font-size: 13px;
-    font-weight: 400;
-    color: #6b7280;
-    margin-top: 2px;
-  }
+  h1 { font-size: 22px; color: #1F4E79; font-weight: 700; line-height: 1.2; }
+  h1 span { display: block; font-size: 13px; font-weight: 400; color: #6b7280; margin-top: 2px; }
 
   .drop-zone {
-    border: 2px dashed #93c5fd;
-    border-radius: 10px;
-    padding: 40px 24px;
-    text-align: center;
-    cursor: pointer;
-    transition: all .2s;
-    background: #f8fbff;
-    margin-bottom: 20px;
-    position: relative;
+    border: 2px dashed #93c5fd; border-radius: 10px; padding: 40px 24px;
+    text-align: center; cursor: pointer; transition: all .2s;
+    background: #f8fbff; margin-bottom: 20px; position: relative;
   }
-
-  .drop-zone:hover, .drop-zone.drag-over {
-    border-color: #2E75B6;
-    background: #eff6ff;
-  }
-
-  .drop-zone input[type="file"] {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-  }
-
-  .drop-icon {
-    font-size: 40px;
-    margin-bottom: 12px;
-  }
-
-  .drop-zone p {
-    color: #374151;
-    font-size: 15px;
-    margin-bottom: 6px;
-  }
-
-  .drop-zone small {
-    color: #9ca3af;
-    font-size: 12px;
-  }
+  .drop-zone:hover, .drop-zone.drag-over { border-color: #2E75B6; background: #eff6ff; }
+  .drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .drop-icon { font-size: 40px; margin-bottom: 12px; }
+  .drop-zone p { color: #374151; font-size: 15px; margin-bottom: 6px; }
+  .drop-zone small { color: #9ca3af; font-size: 12px; }
 
   .file-name {
-    display: none;
-    align-items: center;
-    gap: 8px;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    border-radius: 8px;
-    padding: 10px 14px;
-    margin-bottom: 20px;
-    font-size: 14px;
-    color: #1e40af;
-    word-break: break-all;
+    display: none; align-items: center; gap: 8px;
+    background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px;
+    padding: 10px 14px; margin-bottom: 20px;
+    font-size: 14px; color: #1e40af; word-break: break-all;
   }
-
   .file-name.visible { display: flex; }
-
-  .file-name .remove {
-    margin-left: auto;
-    cursor: pointer;
-    color: #6b7280;
-    font-size: 18px;
-    line-height: 1;
-    flex-shrink: 0;
-  }
+  .file-name .remove { margin-left: auto; cursor: pointer; color: #6b7280; font-size: 18px; line-height: 1; flex-shrink: 0; }
 
   .btn {
-    display: block;
-    width: 100%;
-    padding: 13px;
-    background: #1F4E79;
-    color: #fff;
-    font-size: 15px;
-    font-weight: 600;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background .2s;
+    display: block; width: 100%; padding: 13px;
+    background: #1F4E79; color: #fff; font-size: 15px; font-weight: 600;
+    border: none; border-radius: 8px; cursor: pointer; transition: background .2s;
   }
-
   .btn:hover:not(:disabled) { background: #163d61; }
+  .btn:disabled { background: #93c5fd; cursor: not-allowed; }
 
-  .btn:disabled {
-    background: #93c5fd;
-    cursor: not-allowed;
-  }
-
-  .status {
-    margin-top: 16px;
-    padding: 12px 16px;
-    border-radius: 8px;
-    font-size: 14px;
-    display: none;
-  }
-
-  .status.error {
-    display: block;
-    background: #fef2f2;
-    border: 1px solid #fca5a5;
-    color: #b91c1c;
-  }
-
-  .status.loading {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    color: #1d4ed8;
-  }
-
-  .status.success {
-    display: block;
-    background: #f0fdf4;
-    border: 1px solid #86efac;
-    color: #15803d;
-  }
+  .status { margin-top: 16px; padding: 12px 16px; border-radius: 8px; font-size: 14px; display: none; }
+  .status.error   { display: block; background: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c; }
+  .status.loading { display: flex; align-items: center; gap: 10px; background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; }
+  .status.success { display: block; background: #f0fdf4; border: 1px solid #86efac; color: #15803d; }
 
   .spinner {
-    width: 18px;
-    height: 18px;
-    border: 3px solid #bfdbfe;
-    border-top-color: #2563eb;
-    border-radius: 50%;
-    animation: spin .8s linear infinite;
-    flex-shrink: 0;
+    width: 18px; height: 18px; border: 3px solid #bfdbfe;
+    border-top-color: #2563eb; border-radius: 50%;
+    animation: spin .8s linear infinite; flex-shrink: 0;
   }
-
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .info-row {
-    margin-top: 24px;
-    padding-top: 20px;
-    border-top: 1px solid #e5e7eb;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .badge {
-    background: #f1f5f9;
-    border-radius: 6px;
-    padding: 5px 10px;
-    font-size: 12px;
-    color: #475569;
-  }
-
+  .info-row { margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb; display: flex; flex-wrap: wrap; gap: 10px; }
+  .badge { background: #f1f5f9; border-radius: 6px; padding: 5px 10px; font-size: 12px; color: #475569; }
   .badge strong { color: #1F4E79; }
+
+  /* ── Preview section ── */
+  .preview-section {
+    width: 100%;
+    max-width: 1280px;
+  }
+
+  .preview-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.10);
+    overflow: hidden;
+  }
+
+  .preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 28px;
+    border-bottom: 1px solid #e5e7eb;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .preview-header h2 {
+    font-size: 18px;
+    color: #1F4E79;
+    font-weight: 700;
+  }
+
+  .preview-header .filename {
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 400;
+    margin-left: 8px;
+  }
+
+  .btn-outline {
+    padding: 8px 16px;
+    background: transparent;
+    color: #1F4E79;
+    border: 2px solid #1F4E79;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .btn-outline:hover { background: #1F4E79; color: #fff; }
+
+  /* ── Tabs ── */
+  .tabs-nav {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid #e5e7eb;
+    padding: 0 28px;
+    background: #f8fafc;
+  }
+
+  .tab-btn {
+    padding: 14px 20px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all .15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tab-btn:hover { color: #1F4E79; }
+  .tab-btn.active { color: #1F4E79; border-bottom-color: #1F4E79; }
+  .tab-btn[hidden] { display: none; }
+
+  .tab-count {
+    background: #e0eaf5;
+    color: #1F4E79;
+    border-radius: 12px;
+    padding: 1px 8px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .tab-btn.active .tab-count { background: #1F4E79; color: #fff; }
+
+  /* ── Panels ── */
+  .panel { display: none; padding: 24px 28px; }
+  .panel.active { display: block; }
+
+  /* ── Search bar ── */
+  .search-bar {
+    margin-bottom: 14px;
+  }
+  .search-bar input {
+    width: 100%;
+    max-width: 400px;
+    padding: 9px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .search-bar input:focus { border-color: #2E75B6; }
+
+  /* ── Tables ── */
+  .table-wrap {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 600px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+
+  .data-table thead th {
+    background: #1F4E79;
+    color: #fff;
+    font-weight: 700;
+    padding: 10px 12px;
+    text-align: left;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  .data-table td {
+    padding: 6px 12px;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: middle;
+  }
+
+  /* Fields table row types */
+  .data-table tbody tr.seg-first td { background: #2E75B6; color: #fff; font-weight: 600; }
+  .data-table tbody tr.alt-row td  { background: #EBF3FB; }
+  .data-table tbody tr.norm-row td { background: #fff; }
+  .data-table tbody tr.empty-row td { background: #FFF2CC; }
+
+  /* Meaning cell override (not on seg-first rows) */
+  .data-table tbody tr:not(.seg-first) td.meaning-cell {
+    background: #E2EFDA;
+    font-style: italic;
+    color: #166534;
+  }
+
+  /* Summary table */
+  .data-table tbody tr.sum-row-even td { background: #EBF3FB; }
+  .data-table tbody tr.sum-row-odd  td { background: #fff; }
+
+  .indent { display: inline-block; }
+
+  /* Number/count columns */
+  .col-num { text-align: center; white-space: nowrap; }
+  .col-mono { font-family: 'Courier New', monospace; }
 </style>
 </head>
 <body>
 
+<!-- Upload card -->
 <div class="card">
   <div class="logo">
     <div class="logo-icon">&#x1F4CA;</div>
@@ -234,7 +271,7 @@
       <span class="remove" id="removeFile" title="Usuń plik">&#x2715;</span>
     </div>
 
-    <button type="submit" class="btn" id="submitBtn" disabled>Konwertuj do Excel</button>
+    <button type="submit" class="btn" id="submitBtn" disabled>Konwertuj do Excel + podgląd</button>
   </form>
 
   <div class="status" id="status"></div>
@@ -247,22 +284,109 @@
   </div>
 </div>
 
+<!-- Preview section (hidden until conversion) -->
+<div class="preview-section" id="previewSection" hidden>
+  <div class="preview-card">
+    <div class="preview-header">
+      <h2>Podgląd danych IDoc <span class="filename" id="previewFilename"></span></h2>
+      <button class="btn-outline" id="btnDownloadAgain">&#x2B07; Pobierz Excel ponownie</button>
+    </div>
+
+    <div class="tabs-nav">
+      <button class="tab-btn active" data-tab="summary">
+        Podsumowanie <span class="tab-count" id="cnt-summary">0</span>
+      </button>
+      <button class="tab-btn" data-tab="fields">
+        Pola i wartości <span class="tab-count" id="cnt-fields">0</span>
+      </button>
+      <button class="tab-btn" data-tab="positions" id="tab-positions-btn">
+        Pozycje zamówienia <span class="tab-count" id="cnt-positions">0</span>
+      </button>
+    </div>
+
+    <!-- Summary panel -->
+    <div class="panel active" id="panel-summary">
+      <div class="table-wrap">
+        <table class="data-table" id="table-summary">
+          <thead>
+            <tr>
+              <th>Segment</th>
+              <th class="col-num">Wyst.</th>
+              <th>Opis segmentu</th>
+              <th class="col-num">Poziom</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Fields panel -->
+    <div class="panel" id="panel-fields">
+      <div class="search-bar">
+        <input type="search" id="fieldsSearch" placeholder="Szukaj po nazwie pola, opisie lub wartości…">
+      </div>
+      <div class="table-wrap">
+        <table class="data-table" id="table-fields">
+          <thead>
+            <tr>
+              <th>Segment</th>
+              <th class="col-num">Wyst.</th>
+              <th>Nazwa pola</th>
+              <th class="col-num">Dług.</th>
+              <th>Opis pola</th>
+              <th>Wartość</th>
+              <th>Znaczenie</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Positions panel -->
+    <div class="panel" id="panel-positions">
+      <div class="table-wrap">
+        <table class="data-table" id="table-positions">
+          <thead>
+            <tr>
+              <th>Poz.</th>
+              <th>Materiał (IDTNR)</th>
+              <th>Opis materiału</th>
+              <th class="col-num">Ilość</th>
+              <th>JM</th>
+              <th class="col-num">Cena jedn.</th>
+              <th class="col-num">Wartość netto</th>
+              <th>Data dostawy</th>
+              <th>Zakład</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-  const dropZone   = document.getElementById('dropZone');
-  const fileInput  = document.getElementById('fileInput');
-  const fileNameBox= document.getElementById('fileNameBox');
-  const fileNameTxt= document.getElementById('fileNameText');
-  const removeFile = document.getElementById('removeFile');
-  const submitBtn  = document.getElementById('submitBtn');
-  const status     = document.getElementById('status');
-  const form       = document.getElementById('convertForm');
+  const dropZone    = document.getElementById('dropZone');
+  const fileInput   = document.getElementById('fileInput');
+  const fileNameBox = document.getElementById('fileNameBox');
+  const fileNameTxt = document.getElementById('fileNameText');
+  const removeFile  = document.getElementById('removeFile');
+  const submitBtn   = document.getElementById('submitBtn');
+  const status      = document.getElementById('status');
+  const form        = document.getElementById('convertForm');
 
   let selectedFile = null;
+  let lastXlsxB64 = null;
+  let lastFilename = null;
 
+  // ── File selection ──────────────────────────────────────────────────────────
   function setFile(file) {
     if (!file) return;
     const ext = file.name.split('.').pop().toLowerCase();
-    if (!['txt','idoc'].includes(ext)) {
+    if (!['txt', 'idoc'].includes(ext)) {
       showStatus('error', 'Dozwolone rozszerzenia: .txt, .idoc');
       return;
     }
@@ -283,8 +407,8 @@
 
   function formatSize(bytes) {
     if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1048576) return (bytes/1024).toFixed(1) + ' KB';
-    return (bytes/1048576).toFixed(1) + ' MB';
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1048576).toFixed(1) + ' MB';
   }
 
   function showStatus(type, msg) {
@@ -303,7 +427,6 @@
 
   fileInput.addEventListener('change', () => setFile(fileInput.files[0]));
   removeFile.addEventListener('click', clearFile);
-
   dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
   dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
   dropZone.addEventListener('drop', e => {
@@ -312,6 +435,7 @@
     setFile(e.dataTransfer.files[0]);
   });
 
+  // ── Form submit ─────────────────────────────────────────────────────────────
   form.addEventListener('submit', async e => {
     e.preventDefault();
     if (!selectedFile) return;
@@ -324,26 +448,19 @@
 
     try {
       const res = await fetch('/convert', { method: 'POST', body: fd });
+      const data = await res.json();
 
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
         showStatus('error', data.error || 'Błąd serwera (' + res.status + ')');
         submitBtn.disabled = false;
         return;
       }
 
-      // Trigger download
-      const blob = await res.blob();
-      const disposition = res.headers.get('Content-Disposition') || '';
-      const match = disposition.match(/filename[^;=\n]*=(?:(['"])(.+?)\1|([^;\n]*))/i);
-      const fname = match ? (match[2] || match[3]) : selectedFile.name.replace(/\.\w+$/, '_dokumentacja.xlsx');
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = fname; a.click();
-      URL.revokeObjectURL(url);
-
-      showStatus('success', 'Plik Excel gotowy — pobieranie zostało rozpoczęte.');
+      lastXlsxB64 = data.xlsx_b64;
+      lastFilename = data.filename;
+      downloadXlsx(data.xlsx_b64, data.filename);
+      renderPreview(data);
+      showStatus('success', 'Plik Excel gotowy — pobieranie zostało rozpoczęte. Podgląd danych poniżej.');
       submitBtn.disabled = false;
 
     } catch (err) {
@@ -351,6 +468,125 @@
       submitBtn.disabled = false;
     }
   });
+
+  // ── Download helper ─────────────────────────────────────────────────────────
+  function downloadXlsx(b64, filename) {
+    const bytes = atob(b64);
+    const arr = new Uint8Array(bytes.length);
+    for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+    const blob = new Blob([arr], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  document.getElementById('btnDownloadAgain').addEventListener('click', () => {
+    if (lastXlsxB64) downloadXlsx(lastXlsxB64, lastFilename);
+  });
+
+  // ── Tabs ────────────────────────────────────────────────────────────────────
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ── Field search ────────────────────────────────────────────────────────────
+  document.getElementById('fieldsSearch').addEventListener('input', function () {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('#table-fields tbody tr').forEach(tr => {
+      tr.hidden = q !== '' && !tr.textContent.toLowerCase().includes(q);
+    });
+  });
+
+  // ── Escape HTML ─────────────────────────────────────────────────────────────
+  function esc(s) {
+    if (s == null || s === '') return '';
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // ── Render preview ──────────────────────────────────────────────────────────
+  function renderPreview(data) {
+    renderSummary(data.summary);
+    renderFields(data.rows);
+    renderPositions(data.positions);
+
+    document.getElementById('previewFilename').textContent = data.filename;
+    document.getElementById('cnt-summary').textContent = data.summary.length;
+    document.getElementById('cnt-fields').textContent = data.rows.length;
+    document.getElementById('cnt-positions').textContent = data.positions.length;
+
+    const posBtn = document.getElementById('tab-positions-btn');
+    posBtn.hidden = data.positions.length === 0;
+
+    // Reset to first tab
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="summary"]').classList.add('active');
+    document.getElementById('panel-summary').classList.add('active');
+
+    document.getElementById('previewSection').hidden = false;
+    document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function renderSummary(summary) {
+    const html = summary.map((r, i) => `
+      <tr class="${i % 2 === 0 ? 'sum-row-even' : 'sum-row-odd'}">
+        <td class="col-mono"><span class="indent" style="padding-left:${r.lvl * 16}px"></span>${esc(r.seg)}</td>
+        <td class="col-num">${r.cnt}</td>
+        <td>${esc(r.desc)}</td>
+        <td class="col-num">${r.lvl}</td>
+      </tr>
+    `).join('');
+    document.querySelector('#table-summary tbody').innerHTML = html;
+  }
+
+  function renderFields(rows) {
+    const html = rows.map((r, idx) => {
+      let cls;
+      if (r.is_first) cls = 'seg-first';
+      else if (r.is_empty) cls = 'empty-row';
+      else cls = (idx % 2 === 0) ? 'alt-row' : 'norm-row';
+
+      const meaningCls = (!r.is_first && r.meaning) ? ' meaning-cell' : '';
+
+      return `<tr class="${cls}">
+        <td class="col-mono">${esc(r.seg)}</td>
+        <td class="col-num">${r.occ != null ? r.occ : ''}</td>
+        <td class="col-mono">${esc(r.field)}</td>
+        <td class="col-num">${r.len}</td>
+        <td>${esc(r.desc)}</td>
+        <td>${esc(r.val)}</td>
+        <td class="${meaningCls}">${esc(r.meaning)}</td>
+      </tr>`;
+    }).join('');
+    document.querySelector('#table-fields tbody').innerHTML = html;
+  }
+
+  function renderPositions(positions) {
+    const html = positions.map((r, i) => `
+      <tr class="${i % 2 === 0 ? 'sum-row-even' : 'sum-row-odd'}">
+        <td class="col-num col-mono">${esc(r.posex)}</td>
+        <td class="col-mono">${esc(r.idtnr)}</td>
+        <td>${esc(r.ktext)}</td>
+        <td class="col-num">${esc(r.menge)}</td>
+        <td>${esc(r.menee)}</td>
+        <td class="col-num">${esc(r.vprei)}</td>
+        <td class="col-num">${esc(r.netwr)}</td>
+        <td>${esc(r.date)}</td>
+        <td>${esc(r.werks)}</td>
+      </tr>
+    `).join('');
+    document.querySelector('#table-positions tbody').innerHTML = html;
+  }
 </script>
 </body>
 </html>

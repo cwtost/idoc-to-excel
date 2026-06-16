@@ -1071,6 +1071,83 @@ def build_excel(idoc_rows, out_path):
     print(f"Saved: {out_path}")
 
 
+def build_preview_data(idoc_rows):
+    """Return the same data as build_excel but as structured dicts for web preview."""
+    rows_out = []
+    seg_counter, seg_hlevel, seg_order = {}, {}, {}
+    order_idx = 0
+
+    for seg_name, hlevel, data in idoc_rows:
+        seg_counter[seg_name] = seg_counter.get(seg_name, 0) + 1
+        if seg_name not in seg_hlevel:
+            seg_hlevel[seg_name] = hlevel
+            seg_order[seg_name] = order_idx
+            order_idx += 1
+        occ = seg_counter[seg_name]
+        fields = extract_fields(seg_name, data)
+        first = True
+        for fname, flen, fdesc, val in fields:
+            meaning = field_meaning(seg_name, fname, val)
+            rows_out.append({
+                'seg': seg_name if first else '',
+                'occ': occ if first else None,
+                'lvl': hlevel if first else None,
+                'field': fname,
+                'len': flen,
+                'desc': fdesc,
+                'val': val,
+                'meaning': meaning,
+                'is_first': first,
+                'is_empty': not val,
+            })
+            first = False
+
+    summary = []
+    for seg, cnt in sorted(seg_counter.items(), key=lambda x: seg_order.get(x[0], 9999)):
+        key = get_key(seg)
+        desc = SEG_DESC.get(seg, SEG_DESC.get(key, ''))
+        summary.append({
+            'seg': seg,
+            'cnt': cnt,
+            'desc': desc,
+            'lvl': seg_hlevel.get(seg, 0),
+        })
+
+    positions = []
+    if any(row[0].startswith('E2EDP01') for row in idoc_rows):
+        pos_map, dates_map, mat_map, cur = {}, {}, {}, None
+        for seg_name, hlevel, data in idoc_rows:
+            if seg_name.startswith('E2EDP01'):
+                posex = data[0:6].strip(); cur = posex
+                pos_map[posex] = {
+                    'menge': data[10:25].strip(), 'menee': data[25:28].strip(),
+                    'vprei': data[35:50].strip(), 'netwr': data[59:74].strip(),
+                    'werks': data[193:197].strip(),
+                }
+            elif seg_name.startswith('E2EDP20') and cur:
+                d = data[30:38].strip()
+                if len(d) == 8:
+                    d = f"{d[:4]}-{d[4:6]}-{d[6:8]}"
+                dates_map[cur] = d
+            elif seg_name.startswith('E2EDP19') and cur:
+                mat_map[cur] = {'idtnr': data[3:38].strip(), 'ktext': data[38:108].strip()}
+        for posex, pdata in sorted(pos_map.items()):
+            mat = mat_map.get(posex, {})
+            positions.append({
+                'posex': posex,
+                'idtnr': mat.get('idtnr', ''),
+                'ktext': mat.get('ktext', ''),
+                'menge': pdata['menge'],
+                'menee': pdata['menee'],
+                'vprei': pdata['vprei'],
+                'netwr': pdata['netwr'],
+                'date': dates_map.get(posex, ''),
+                'werks': pdata['werks'],
+            })
+
+    return {'summary': summary, 'rows': rows_out, 'positions': positions}
+
+
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print("IDoc → Excel dokumentacja")
