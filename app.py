@@ -5,7 +5,7 @@ import tempfile
 from flask import Flask, render_template, request, jsonify
 from idoc_parser import parse_flat, build_excel, build_preview_data
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # 32 MB
 
 ALLOWED_EXT = {'.txt', '.idoc'}
@@ -66,4 +66,4 @@ def convert():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5004)

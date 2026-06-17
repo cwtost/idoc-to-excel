@@ -960,9 +960,16 @@ def build_excel(idoc_rows, out_path):
     # Sheet 1 – full breakdown
     ws = wb.active
     ws.title = 'IDoc - Pola i wartości'
-    hdr(ws, 1, ['Segment','Wyst.','Nazwa pola (IDoc)','Dług.','Opis pola','Wartość','Znaczenie'])
 
-    seg_counter, seg_hlevel, seg_order, r = {}, {}, {}, 2
+    # Add 4vation header
+    ws['A1'] = '4vation - Your Digital Logistic Ecosystem'
+    ws['A1'].font = Font(bold=True, size=12, color='1F4E79')
+    ws.merge_cells('A1:G1')
+    ws.row_dimensions[1].height = 25
+
+    hdr(ws, 2, ['Segment','Wyst.','Nazwa pola (IDoc)','Dług.','Opis pola','Wartość','Znaczenie'])
+
+    seg_counter, seg_hlevel, seg_order, r = {}, {}, {}, 3
     order_idx = 0
     for seg_name, hlevel, data in idoc_rows:
         seg_counter[seg_name] = seg_counter.get(seg_name, 0) + 1
@@ -1004,10 +1011,20 @@ def build_excel(idoc_rows, out_path):
 
     # Sheet 2 – summary (sorted by document order to reflect hierarchy)
     ws2 = wb.create_sheet('Podsumowanie')
+
+    # Add 4vation header
     ws2.merge_cells('A1:D1')
-    ws2['A1'] = 'IDoc – Podsumowanie segmentów'
-    ws2['A1'].font = Font(name='Arial', bold=True, size=14, color='1F4E79')
+    ws2['A1'] = '4vation - Your Digital Logistic Ecosystem'
+    ws2['A1'].font = Font(bold=True, size=12, color='FFFFFF')
+    ws2['A1'].fill = PatternFill(start_color='2E75B6', end_color='2E75B6', fill_type='solid')
     ws2['A1'].alignment = Alignment(horizontal='center')
+    ws2.row_dimensions[1].height = 20
+
+    ws2.merge_cells('A2:D2')
+    ws2['A2'] = 'IDoc – Podsumowanie segmentów'
+    ws2['A2'].font = Font(name='Arial', bold=True, size=13, color='1F4E79')
+    ws2['A2'].alignment = Alignment(horizontal='center')
+
     hdr(ws2, 3, ['Segment (wcięcie = poziom zagnieżdżenia)','Liczba wystąpień','Opis segmentu','Poziom'])
     r2 = 4
     for seg, cnt in sorted(seg_counter.items(), key=lambda x: seg_order.get(x[0], 9999)):
