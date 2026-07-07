@@ -8,7 +8,7 @@ from idoc_parser import parse_flat, build_excel, build_preview_data
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # 32 MB
 
-ALLOWED_EXT = {'.txt', '.idoc'}
+ALLOWED_EXT = {'.txt', '.idoc', '.xml'}
 
 
 def allowed(filename):
@@ -30,7 +30,7 @@ def convert():
     if not f.filename:
         return jsonify(error='Nie wybrano pliku.'), 400
     if not allowed(f.filename):
-        return jsonify(error='Dozwolone rozszerzenia: .txt, .idoc'), 400
+        return jsonify(error='Dozwolone rozszerzenia: .txt, .idoc, .xml'), 400
 
     try:
         with tempfile.NamedTemporaryFile(suffix='.txt', delete=False) as tmp:

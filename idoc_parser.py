@@ -6,6 +6,7 @@ Usage: python idoc_parser.py <input.txt> [output.xlsx]
 import sys
 import os
 import re
+import xml.etree.ElementTree as ET
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 
@@ -754,7 +755,82 @@ def get_key(seg_name):
             return k
     return None
 
+def parse_xml(filepath):
+    """Parse SAP IDoc XML and convert to flat-file format (segment_name, hlevel, data)."""
+    rows = []
+
+    try:
+        tree = ET.parse(filepath)
+        root = tree.getroot()
+    except Exception as e:
+        print(f'Error parsing XML: {e}')
+        return []
+
+    # Process all segment elements in XML
+    for elem in root.iter():
+        tag_name = elem.tag
+
+        # Skip non-segment elements and root elements
+        if tag_name in ('IDOC', 'IDOC_ORDES05', 'IDOC_ORDERS05', 'ORDERS05', 'INVOIC05', 'DESADV05', 'RECADV05'):
+            continue
+        if not tag_name or tag_name.startswith('_'):
+            continue
+
+        # Extract SEGMENT attribute if exists
+        segment_attr = elem.get('SEGMENT', '')
+
+        # Convert XML element to flat-file format
+        seg_name = tag_name
+        hlevel = 0
+
+        # Build data string from all child text elements
+        data_parts = []
+        for child in elem:
+            child_tag = child.tag
+            child_text = child.text if child.text else ''
+            data_parts.append(child_text)
+
+        # If element has text content, use it
+        elem_text = elem.text if elem.text else ''
+        if elem_text.strip() and not data_parts:
+            data_str = elem_text.strip()
+        else:
+            # Pad data to expected format (SAP IDoc flat format)
+            # Fixed-width fields based on SEGMENT_FIELDS definitions
+            data_str = ''.join(data_parts).ljust(200)
+
+        # Map element content to structured data
+        data_dict = {}
+        for child in elem:
+            field_name = child.tag
+            field_value = child.text if child.text else ''
+            data_dict[field_name] = field_value
+
+        # Convert to pipe-separated format for compatibility
+        data_items = []
+        for child in elem:
+            child_text = child.text if child.text else ''
+            # Pad to field length based on SEGMENT_FIELDS
+            data_items.append(child_text)
+
+        # Build flat-file compatible data string
+        data_output = ''.join(f'{v:30}' for v in data_items)[:1000]
+
+        rows.append((seg_name, hlevel, data_output))
+
+    return rows if rows else []
+
+
 def parse_flat(filepath):
+    """Parse IDoc file (TXT or XML). Auto-detects format."""
+    with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+        content = f.read(100)
+
+    # Auto-detect format
+    if content.strip().startswith('<?xml') or content.strip().startswith('<ORDERS') or content.strip().startswith('<IDOC'):
+        return parse_xml(filepath)
+
+    # Parse as flat-file (TXT)
     rows = []
     with open(filepath, 'r', encoding='latin-1') as f:
         for line in f:
