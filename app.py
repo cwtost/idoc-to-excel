@@ -2,14 +2,26 @@ import os
 import io
 import base64
 import tempfile
-from flask import Flask, render_template, request, jsonify
+import sys
+from flask import Flask, render_template, request, jsonify, Response
+
+# Force reload of idoc_parser to pick up latest changes
+if 'idoc_parser' in sys.modules:
+    del sys.modules['idoc_parser']
+
 from idoc_parser import parse_flat, build_excel, build_preview_data
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # 32 MB
+app.config['JSON_SORT_KEYS'] = False  # Force fresh cache
+
+# Cache busting version
+APP_VERSION = "20260707-145000"
 
 ALLOWED_EXT = {'.txt', '.idoc', '.xml'}
 
+print(f"DEBUG: app.py loaded from: {__file__}")
+print(f"DEBUG: ALLOWED_EXT = {ALLOWED_EXT}")
 
 def allowed(filename):
     _, ext = os.path.splitext(filename.lower())
@@ -18,7 +30,22 @@ def allowed(filename):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    from flask import make_response
+    html = render_template('index.html')
+    response = make_response(html)
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
+
+
+@app.route('/debug')
+def debug_info():
+    return jsonify({
+        'app_file': __file__,
+        'allowed_ext': list(ALLOWED_EXT),
+        'debug_mode': app.debug
+    })
 
 
 @app.route('/convert', methods=['POST'])
@@ -38,6 +65,13 @@ def convert():
             tmp_path = tmp.name
 
         rows = parse_flat(tmp_path)
+
+        # DEBUG: Check E1EDK14 data
+        for seg_name, hlevel, data in rows:
+            if seg_name == 'E1EDK14':
+                print(f"DEBUG E1EDK14: data_len={len(data)} first 40 chars={repr(data[:40])}")
+                break
+
         if not rows:
             os.unlink(tmp_path)
             return jsonify(error='Plik jest pusty lub nie zawiera danych IDoc.'), 400
@@ -66,4 +100,4 @@ def convert():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5004)
+    app.run(debug=False, port=5004)

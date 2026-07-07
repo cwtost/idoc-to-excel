@@ -10,8 +10,154 @@ import xml.etree.ElementTree as ET
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 
+# ── Field descriptions (meanings) ─────────────────────────────────────────
+FIELD_DESCRIPTIONS = {
+    'PARVW': 'Partner role (e.g., buyer, goods recipient)',
+    'QUALF': 'Qualifier/Classification code',
+    'EMAIL': 'Email address',
+    'BELNR': 'Document/Reference number',
+    'PARTN': 'Partner number',
+    'LIFNR': 'Supplier number at customer',
+    'NAME1': 'Name 1',
+    'NAME2': 'Name 2',
+    'STRAS': 'Street and house number',
+    'ORT01': 'City',
+    'PSTLZ': 'Postal code',
+    'LAND1': 'Country code',
+    'TELF1': 'Phone number 1',
+    'TELFX': 'Fax number',
+    'SPRAS': 'Language key',
+    'BSART': 'Document type',
+    'CURCY': 'Currency',
+    'DATUM': 'Date',
+    'UZEIT': 'Time',
+    'MENGE': 'Quantity',
+    'MENEE': 'Unit of measure',
+    'NETWR': 'Net value',
+    'VPREI': 'Net price',
+    'MATKL': 'Material class',
+    'IDDAT': 'Date qualifier',
+    'IDTNR': 'Material identification',
+    'KTEXT': 'Short text/description',
+    'ORGID': 'Organization code',
+    'TDID': 'Text ID',
+    'TDLINE': 'Text line',
+    'POSEX': 'Line item number',
+    'ACTION': 'Action code',
+    'KZABS': 'Order confirmation required flag',
+    'STATUS': 'Status',
+    'DIRECT': 'Direction (1=outbound, 2=inbound)',
+    'OUTMOD': 'Output mode',
+    'MESTYP': 'Message type',
+    'DOCNUM': 'IDoc number',
+    'MANDT': 'Client/Mandant',
+    'TABNAM': 'Table name',
+    'DOCREL': 'SAP Release',
+    'IDOCTYP': 'IDoc type',
+    'CIMTYP': 'Customer extension',
+    'SNDPOR': 'Sender port',
+    'RCVPOR': 'Receiver port',
+    'CREDAT': 'Creation date',
+    'CRETIM': 'Creation time',
+    'SERIAL': 'Serial number',
+}
+
 # ── Field definitions ──────────────────────────────────────────────────────
 SEGMENT_FIELDS = {
+
+    # ── XML IDoc segments (SAP IDoc XML schema) ──
+    'EDI_DC40': [
+        ('TABNAM',30,'Table name'),
+        ('MANDT',3,'Client'),
+        ('DOCNUM',16,'Document number'),
+        ('DOCREL',4,'Document release'),
+        ('STATUS',2,'Status'),
+        ('DIRECT',1,'Direction'),
+        ('OUTMOD',1,'Output mode'),
+        ('IDOCTYP',30,'IDoc type'),
+        ('CIMTYP',30,'Customer IDoc type'),
+        ('MESTYP',30,'Message type'),
+    ],
+    'E1EDK01': [
+        ('CURCY',3,'Currency'),('HWAER',3,'Header currency'),('WKURS',12,'Exchange rate'),
+        ('ZTERM',3,'Payment terms'),('BSART',4,'Order type'),('BELNR',35,'Document number'),
+        ('RECIPNT_NO',10,'Recipient number'),
+    ],
+    'E1EDK14': [
+        ('QUALF',3,'Qualifier'),('ORGID',35,'Organization code'),
+    ],
+    'E1EDK03': [
+        ('IDDAT',3,'Date qualifier'),('DATUM',8,'Date'),('UZEIT',6,'Time'),
+    ],
+    'E1EDK02': [
+        ('QUALF',3,'Qualifier'),('BELNR',35,'Document number'),('POSNR',6,'Item number'),
+        ('DATUM',8,'Date'),('UZEIT',6,'Time'),
+    ],
+    'E1EDK17': [
+        ('QUALF',3,'Qualifier'),('LKOND',3,'Delivery condition code'),('LKTEXT',70,'Delivery condition text'),
+    ],
+    'E1EDK18': [
+        ('QUALF',3,'Qualifier'),('TAGE',8,'Days'),('PRZNT',8,'Percentage'),
+    ],
+    'E1EDK35': [
+        ('QUALZ',3,'Qualifier'),('CUSADD',35,'Custom data'),
+    ],
+    'E1EDKA1': [
+        ('PARVW',3,'Partner role'),('PARTN',17,'Partner number'),('LIFNR',17,'Supplier number'),
+        ('NAME1',35,'Name 1'),('NAME2',35,'Name 2'),('NAME3',35,'Name 3'),('NAME4',35,'Name 4'),
+        ('STRAS',35,'Street'),('STRS2',35,'Street 2'),('PFACH',35,'P.O. Box'),
+        ('ORT01',35,'City'),('COUNC',9,'County code'),('PSTLZ',9,'Postal code'),
+        ('PSTL2',9,'Postal code 2'),('LAND1',3,'Country'),('ABLAD',35,'Unloading point'),
+        ('PERNR',30,'Personnel number'),('PARNR',30,'Partner address number'),
+        ('TELF1',25,'Phone 1'),('TELF2',25,'Phone 2'),('TELBX',25,'Mailbox'),
+        ('TELFX',25,'Fax'),('TELTX',25,'Telex'),('TELX1',25,'Telex 1'),
+        ('SPRAS',1,'Language'),('ANRED',15,'Salutation'),('ORT02',35,'Suburb'),
+        ('HAUSN',6,'House number'),('STOCK',6,'Floor'),('REGIO',3,'Region'),
+        ('PARGE',1,'Partner gender'),('ISOAL',2,'ISO country code'),('ISONU',2,'ISO country code 2'),
+        ('FCODE',20,'France code'),('IHREZ',30,'Your reference'),('BNAME',35,'User name'),
+        ('PAORG',30,'Org code'),('ORGTX',35,'Org description'),('PAGRU',30,'Group code'),
+        ('KNREF',30,'Customer reference'),('ILNNR',70,'GLN number'),('PFORT',35,'P.O. City'),
+        ('SPRAS_ISO',2,'Language ISO'),('TITLE',15,'Title'),
+    ],
+    'E1EDKT1': [
+        ('TDID',4,'Text ID'),('TSSPRAS',3,'Language key'),('TSSPRAS_ISO',2,'Language ISO'),
+    ],
+    'E1EDKT2': [
+        ('TDLINE',70,'Text line'),('TDFORMAT',2,'Format'),
+    ],
+    'E1EDP01': [
+        ('POSEX',6,'Line item number'),('ACTION',3,'Action code'),('PSTYP',1,'Item type'),
+        ('KZABS',1,'Order conf. required'),('MENGE',15,'Quantity'),('MENEE',3,'Unit'),
+        ('BMNG2',15,'Qty in price unit'),('PMENE',3,'Price unit'),('VPREI',15,'Net price'),
+        ('PEINH',9,'Price unit'),('NETWR',18,'Net value'),('ANETW',18,'Absolute net value'),
+        ('SKFBP',18,'Discount base'),('NTGEW',18,'Net weight'),('GEWEI',3,'Weight unit'),
+        ('EINKZ',1,'Multiple divisions'),('CURCY',3,'Currency'),('PREIS',18,'Gross price'),
+        ('MATKL',9,'Material class'),('UEPOS',6,'Parent item'),('GRKOR',3,'Delivery group'),
+        ('EVERS',7,'Shipping instr.'),('BPUMN',6,'Base unit ratio num'),('BPUMZ',6,'Base unit ratio denom'),
+        ('ABGRU',2,'Rejection reason'),('ABGRT',40,'Rejection desc.'),('ANTLF',1,'Max part deliveries'),
+        ('FIXMG',1,'Fixed qty'),('KZAZU',1,'Order consolidation'),('BRGEW',18,'Gross weight'),
+        ('PSTYV',4,'Item type SD'),('EMPST',25,'Receipt point'),('ABTNR',4,'Dept number'),
+        ('ABRVW',3,'Usage indicator'),('WERKS',4,'Plant'),('LPRIO',2,'Delivery priority'),
+        ('LPRIO_BEZ',20,'Priority desc.'),('ROUTE',6,'Route'),('ROUTE_BEZ',40,'Route desc.'),
+        ('LGORT',4,'Storage location'),('VSTEL',4,'Shipping point'),('DELCO',3,'Delivery time'),
+        ('MATNR',35,'Material number'),('VALTG',2,'Extra days'),('HIPOS',6,'Hierarchy parent'),
+        ('HIEVW',1,'Hierarchy usage'),('POSGUID',22,'GUID'),
+        ('MATNR_EXTERNAL',40,'Ext material number'),('MATNR_VERSION',10,'Material version'),
+        ('MATNR_GUID',32,'Material GUID'),('IUID_RELEVANT',1,'IUID relevant'),
+        ('SGT_RCAT',16,'Demand segment'),('SGT_SCAT',16,'Stock segment'),
+        ('HANDOVERLOC',10,'Handover location'),('MATNR_LONG',40,'Material long'),
+        ('REQ_SEG_LONG',40,'Demand seg long'),('STK_SEG_LONG',40,'Stock seg long'),
+        ('EXPECTED_VALUE',31,'Expected value'),('LIMIT_AMOUNT',31,'Limit amount'),
+    ],
+    'E1CUCFG': [
+        ('POSEX',6,'Line item number'),('CONFIG_ID',6,'Config ID'),('ROOT_ID',8,'Root ID'),
+    ],
+    'E1EDS01': [
+        ('SUMID',3,'Total qualifier'),('SUMME',18,'Total value'),('SUNIT',3,'Unit'),('WAERQ',3,'Currency'),
+    ],
+    'E1E2_GENERIC': [
+        ('DATA',999,'Segment data'),
+    ],
 
     # ── Short/specific segments (must be defined before generic E2EDK*/E2EDP*) ──
     'E2EDK02': [
@@ -753,70 +899,109 @@ def get_key(seg_name):
     for k in sorted(SEGMENT_FIELDS.keys(), key=len, reverse=True):
         if seg_name.startswith(k):
             return k
+    # 5. Fallback: for unknown E1/E2 segments, return empty tuple to trigger generic handler
+    if seg_name.startswith('E1') or seg_name.startswith('E2'):
+        return 'E1E2_GENERIC'
     return None
 
 def parse_xml(filepath):
     """Parse SAP IDoc XML and convert to flat-file format (segment_name, hlevel, data)."""
     rows = []
 
+    # Sanitize XML: escape unescaped ampersands and fix unclosed tags
     try:
-        tree = ET.parse(filepath)
-        root = tree.getroot()
+        with open(filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+    except UnicodeDecodeError:
+        # Fallback to Latin-1 for files with German/special characters
+        with open(filepath, 'r', encoding='latin-1') as f:
+            content = f.read()
+    # Replace & that are not part of proper XML entities (&entity;)
+    content = re.sub(r'&(?![a-zA-Z][a-zA-Z0-9_]*;)', '&amp;', content)
+    # Auto-close unclosed tags like <ZK> that appear inside TDLINE elements
+    content = re.sub(r'<ZK>(?!</ZK>)', '<ZK/>', content)
+
+    try:
+        root = ET.fromstring(content)
     except Exception as e:
         print(f'Error parsing XML: {e}')
         return []
 
-    # Process all segment elements in XML
+    # Find IDOC element (skip root wrapper if needed)
+    idoc_elem = None
     for elem in root.iter():
+        if elem.tag == 'IDOC':
+            idoc_elem = elem
+            break
+
+    if idoc_elem is None:
+        return []
+
+    def parse_segment(elem, hlevel=0):
+        """Recursively parse segment and its nested segments."""
+        if 'SEGMENT' not in elem.attrib:
+            return
+
         tag_name = elem.tag
-
-        # Skip non-segment elements and root elements
-        if tag_name in ('IDOC', 'IDOC_ORDES05', 'IDOC_ORDERS05', 'ORDERS05', 'INVOIC05', 'DESADV05', 'RECADV05'):
-            continue
         if not tag_name or tag_name.startswith('_'):
-            continue
+            return
 
-        # Extract SEGMENT attribute if exists
-        segment_attr = elem.get('SEGMENT', '')
-
-        # Convert XML element to flat-file format
         seg_name = tag_name
-        hlevel = 0
 
-        # Build data string from all child text elements
-        data_parts = []
-        for child in elem:
-            child_tag = child.tag
-            child_text = child.text if child.text else ''
-            data_parts.append(child_text)
-
-        # If element has text content, use it
-        elem_text = elem.text if elem.text else ''
-        if elem_text.strip() and not data_parts:
-            data_str = elem_text.strip()
-        else:
-            # Pad data to expected format (SAP IDoc flat format)
-            # Fixed-width fields based on SEGMENT_FIELDS definitions
-            data_str = ''.join(data_parts).ljust(200)
-
-        # Map element content to structured data
-        data_dict = {}
-        for child in elem:
-            field_name = child.tag
-            field_value = child.text if child.text else ''
-            data_dict[field_name] = field_value
-
-        # Convert to pipe-separated format for compatibility
+        # Build data from child elements (fields, not nested segments)
+        # Use SEGMENT_FIELDS to get proper padding lengths
         data_items = []
-        for child in elem:
-            child_text = child.text if child.text else ''
-            # Pad to field length based on SEGMENT_FIELDS
-            data_items.append(child_text)
+        if seg_name in SEGMENT_FIELDS:
+            # Use pre-defined field definitions
+            field_defs = SEGMENT_FIELDS[seg_name]
+            child_dict = {}
+            for child in elem:
+                # Only include direct text children (fields), not nested segments
+                if 'SEGMENT' not in child.attrib and child.tag and not child.tag.startswith('_'):
+                    child_dict[child.tag] = (child.text if child.text else '')
+            for fname, flen, fdesc in field_defs:
+                val = child_dict.get(fname, '')
+                data_items.append(f'{val:{flen}}')
+        elif seg_name.startswith('E1') or seg_name.startswith('E2'):
+            # Auto-generate field definitions for unknown XML segments
+            field_defs = []
+            child_dict = {}
+            for child in elem:
+                if 'SEGMENT' not in child.attrib and child.text:
+                    field_name = child.tag
+                    field_len = len(str(child.text)) + 5
+                    field_desc = FIELD_DESCRIPTIONS.get(field_name, field_name)
+                    field_defs.append((field_name, field_len, field_desc))
+                    child_dict[field_name] = (child.text if child.text else '')
+
+            # Add to SEGMENT_FIELDS for future use
+            if field_defs:
+                SEGMENT_FIELDS[seg_name] = field_defs
+
+            # Build data using auto-generated definitions
+            for fname, flen, fdesc in field_defs:
+                val = child_dict.get(fname, '')
+                data_items.append(f'{val:{flen}}')
+        else:
+            # Fallback: pad each field to 30 chars for unknown segments
+            for child in elem:
+                if 'SEGMENT' not in child.attrib:
+                    child_text = child.text if child.text else ''
+                    data_items.append(f'{child_text:30}')
 
         # Build flat-file compatible data string
-        data_output = ''.join(f'{v:30}' for v in data_items)[:1000]
-
+        data_output = ''.join(data_items)[:2000]
         rows.append((seg_name, hlevel, data_output))
+
+        # Process nested segments (children with SEGMENT attribute)
+        for child in elem:
+            if child.tag and not child.tag.startswith('_') and 'SEGMENT' in child.attrib:
+                parse_segment(child, hlevel + 1)
+
+    # Process direct children of IDOC (main segments)
+    for elem in idoc_elem:
+        if elem.tag and not elem.tag.startswith('_') and 'SEGMENT' in elem.attrib:
+            parse_segment(elem, hlevel=0)
 
     return rows if rows else []
 
@@ -915,6 +1100,46 @@ QUALF_EDK03 = {
     '020': 'Data wejścia w życie',
 }
 
+IDDAT_DESC = {
+    '001': 'Data żądanej dostawy (requested delivery)',
+    '002': 'Data zamówienia (purchase order date)',
+    '004': 'Data dostawy (delivery date)',
+    '007': 'Data oferty (quotation date)',
+    '008': 'Data ważności oferty',
+    '009': 'Data potwierdzenia zamówienia',
+    '010': 'Data wystawienia faktury',
+    '011': 'Data dostawy od',
+    '012': 'Data dostawy do',
+    '013': 'Data płatności',
+    '014': 'Data kontraktu',
+    '015': 'Data harmonogramu',
+    '017': 'Data wysyłki',
+    '018': 'Data przyjęcia towaru (GR date)',
+    '019': 'Data dokumentu',
+    '020': 'Data wejścia w życie',
+}
+
+SUMID_DESC = {
+    '001': 'Suma wartości netto (net amount)',
+    '002': 'Rabat (discount)',
+    '003': 'Koszty dostawy (freight/delivery charges)',
+    '004': 'Ubezpieczenie (insurance)',
+    '005': 'Podatek (tax)',
+    '006': 'Rabat handlowy (trade discount)',
+    '007': 'Opłata dodatkowa (additional charge)',
+    '008': 'Pojemnik (container)',
+    '009': 'Opakowanie (packaging)',
+    '010': 'Obsługa (handling)',
+    '011': 'Zaokrąglenie (rounding)',
+    '013': 'Promocja (promotional discount)',
+    '014': 'Wychodzący podatek VAT (VAT outgoing)',
+    '015': 'Przychodzący podatek VAT (VAT incoming)',
+    '017': 'Cło (duty)',
+    '018': 'Zwrot (return credit)',
+    '019': 'Kredyt (credit)',
+    '020': 'Dopłata (surcharge)',
+}
+
 QUALF_EDK02 = {
     '001': 'Numer zamówienia klienta (customer PO)',
     '002': 'Numer potwierdzenia zamówienia',
@@ -977,6 +1202,7 @@ QUALF_ZEMAIL = {
 }
 
 FIELD_LOOKUPS = {
+    # TXT format (E2*)
     ('E2EDKA',  'PARVW'): PARVW_DESC,
     ('E2EDKA1', 'PARVW'): PARVW_DESC,
     ('E2EDPA',  'PARVW'): PARVW_DESC,
@@ -990,6 +1216,18 @@ FIELD_LOOKUPS = {
     ('E2EDK35', 'QUALF'): QUALF_EDK35,
     ('E2EDP19', 'QUALF'): QUALF_EDP19,
     ('ZE1EDKEMAIL', 'QUALF'): QUALF_ZEMAIL,
+    # XML format (E1*)
+    ('E1EDKA1', 'PARVW'): PARVW_DESC,
+    ('E1EDK02', 'QUALF'): QUALF_EDK02,
+    ('E1EDK03', 'QUALF'): QUALF_EDK03,
+    ('E1EDK03', 'IDDAT'): IDDAT_DESC,
+    ('E1EDK14', 'QUALF'): QUALF_EDK14,
+    ('E1EDK17', 'QUALF'): QUALF_EDK17,
+    ('E1EDK18', 'QUALF'): QUALF_EDK18,
+    ('E1EDK35', 'QUALF'): QUALF_EDK35,
+    ('E1EDP19', 'QUALF'): QUALF_EDP19,
+    ('E1EDP17', 'QUALF'): QUALF_EDK17,
+    ('E1EDS01', 'SUMID'): SUMID_DESC,
 }
 
 
@@ -1159,6 +1397,48 @@ def build_excel(idoc_rows, out_path):
         for col, w in zip('ABCDEFGHI', [8,20,35,12,6,14,14,14,10]):
             ws3.column_dimensions[col].width = w
         ws3.freeze_panes = 'A4'
+
+    # Sheet 4 – Qualifier dictionary
+    ws4 = wb.create_sheet('Słownik kwalifikatorów')
+    ws4.merge_cells('A1:C1')
+    ws4['A1'] = 'Słownik kwalifikatorów IDoc – Możliwe wartości i ich znaczenia'
+    ws4['A1'].font = Font(name='Arial', bold=True, size=12, color='FFFFFF')
+    ws4['A1'].fill = PatternFill(start_color='1F4E79', end_color='1F4E79', fill_type='solid')
+    ws4['A1'].alignment = Alignment(horizontal='center')
+    ws4.row_dimensions[1].height = 20
+
+    hdr(ws4, 2, ['Typ kwalifikatora','Kod','Znaczenie'])
+
+    qualifier_dicts = {
+        'PARVW': PARVW_DESC,
+        'QUALF_EDK02': QUALF_EDK02,
+        'QUALF_EDK03': QUALF_EDK03,
+        'QUALF_EDK14': QUALF_EDK14,
+        'QUALF_EDK17': QUALF_EDK17,
+        'QUALF_EDK18': QUALF_EDK18,
+        'QUALF_EDK35': QUALF_EDK35,
+        'QUALF_EDP19': QUALF_EDP19,
+        'IDDAT': IDDAT_DESC,
+        'SUMID': SUMID_DESC,
+        'QUALF_ZEMAIL': QUALF_ZEMAIL,
+    }
+
+    r4 = 3
+    for qual_name, qual_dict in sorted(qualifier_dicts.items()):
+        first_row = r4
+        for code, meaning in sorted(qual_dict.items()):
+            fill = ALT_FILL if r4 % 2 == 0 else WHT_FILL
+            qual_display = qual_name if r4 == first_row else ''
+            cell(ws4, r4, 1, qual_display, fill, NORM_FONT if not qual_display else Font(name='Arial', bold=True, size=10),
+                 Alignment(horizontal='left', vertical='top'))
+            cell(ws4, r4, 2, code, fill, align=Alignment(horizontal='center', vertical='center'))
+            cell(ws4, r4, 3, meaning, fill, align=Alignment(horizontal='left', vertical='center', wrap_text=True))
+            r4 += 1
+
+    ws4.column_dimensions['A'].width = 20
+    ws4.column_dimensions['B'].width = 8
+    ws4.column_dimensions['C'].width = 50
+    ws4.freeze_panes = 'A2'
 
     wb.save(out_path)
     print(f"Saved: {out_path}")

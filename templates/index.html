@@ -388,8 +388,8 @@
   function setFile(file) {
     if (!file) return;
     const ext = file.name.split('.').pop().toLowerCase();
-    if (!['txt', 'idoc'].includes(ext)) {
-      showStatus('error', 'Dozwolone rozszerzenia: .txt, .idoc');
+    if (!['txt', 'idoc', 'xml'].includes(ext)) {
+      showStatus('error', 'Dozwolone rozszerzenia: .txt, .idoc, .xml');
       return;
     }
     selectedFile = file;
