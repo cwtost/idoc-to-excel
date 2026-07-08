@@ -1,4 +1,4 @@
-Convert an SAP IDoc flat file (.txt) to an Excel documentation file (.xlsx).
+Convert an SAP IDoc file (.txt or .xml) to an Excel documentation file (.xlsx).
 
 Usage: /idoc-convert <path-to-idoc-file>
 

@@ -4,7 +4,7 @@ IDoc-to-Excel converter application documentation for Claude Code.
 
 ## Project Overview
 
-Flask-based SAP IDoc flat file parser. Users upload IDoc files and convert them to Excel documentation with segment breakdown, field descriptions, and data preview. Interface is in Polish.
+Flask-based SAP IDoc (txt/xml) parser. Users upload IDoc files in TXT or XML format and convert them to Excel documentation with segment breakdown, field descriptions, and data preview. Interface is in Polish.
 
 ## Commands
 

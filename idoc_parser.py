@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-SAP IDoc flat-file → Excel documentation generator.
-Usage: python idoc_parser.py <input.txt> [output.xlsx]
+SAP IDoc (txt/xml) → Excel documentation generator.
+Usage: python idoc_parser.py <input.txt|input.xml> [output.xlsx]
 """
 import sys
 import os
