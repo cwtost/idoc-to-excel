@@ -1,0 +1,366 @@
+BEGIN_RECORD_SECTION
+  BEGIN_CONTROL_RECORD
+    BEGIN_FIELDS
+      NAME                TABNAM
+      TEXT                Name of the table structure
+      TYPE                CHARACTER
+      LENGTH              000010
+      FIELD_POS           0001
+      CHARACTER_FIRST     000001
+      CHARACTER_LAST      000010
+
+      NAME                MANDT
+      TEXT                Client
+      TYPE                CHARACTER
+      LENGTH              000003
+      FIELD_POS           0002
+      CHARACTER_FIRST     000011
+      CHARACTER_LAST      000013
+
+      NAME                DOCNUM
+      TEXT                IDoc number
+      TYPE                CHARACTER
+      LENGTH              000016
+      FIELD_POS           0003
+      CHARACTER_FIRST     000014
+      CHARACTER_LAST      000029
+
+      NAME                DOCREL
+      TEXT                SAP release of the IDoc
+      TYPE                CHARACTER
+      LENGTH              000004
+      FIELD_POS           0004
+      CHARACTER_FIRST     000030
+      CHARACTER_LAST      000033
+
+      NAME                STATUS
+      TEXT                Status of the IDoc
+      TYPE                CHARACTER
+      LENGTH              000002
+      FIELD_POS           0005
+      CHARACTER_FIRST     000034
+      CHARACTER_LAST      000035
+
+      NAME                CREDAT
+      TEXT                Creation date
+      TYPE                CHARACTER
+      LENGTH              000008
+      FIELD_POS           0030
+      CHARACTER_FIRST     000379
+      CHARACTER_LAST      000386
+
+      NAME                CRETIM
+      TEXT                Creation time
+      TYPE                CHARACTER
+      LENGTH              000006
+      FIELD_POS           0031
+      CHARACTER_FIRST     000387
+      CHARACTER_LAST      000392
+
+      NAME                SERIAL
+      TEXT                Serialization
+      TYPE                CHARACTER
+      LENGTH              000020
+      FIELD_POS           0036
+      CHARACTER_FIRST     000505
+      CHARACTER_LAST      000524
+    END_FIELDS
+  END_CONTROL_RECORD
+  BEGIN_DATA_RECORD
+    BEGIN_FIELDS
+      NAME                SEGNAM
+      TEXT                Segment (external name)
+      TYPE                CHARACTER
+      LENGTH              000030
+      FIELD_POS           0001
+      CHARACTER_FIRST     000001
+      CHARACTER_LAST      000030
+
+      NAME                MANDT
+      TEXT                Client
+      TYPE                CHARACTER
+      LENGTH              000003
+      FIELD_POS           0002
+      CHARACTER_FIRST     000031
+      CHARACTER_LAST      000033
+
+      NAME                DOCNUM
+      TEXT                IDoc number
+      TYPE                CHARACTER
+      LENGTH              000016
+      FIELD_POS           0003
+      CHARACTER_FIRST     000034
+      CHARACTER_LAST      000049
+
+      NAME                SEGNUM
+      TEXT                Segment number
+      TYPE                CHARACTER
+      LENGTH              000006
+      FIELD_POS           0004
+      CHARACTER_FIRST     000050
+      CHARACTER_LAST      000055
+
+      NAME                PSGNUM
+      TEXT                Number of the parent segment
+      TYPE                CHARACTER
+      LENGTH              000006
+      FIELD_POS           0005
+      CHARACTER_FIRST     000056
+      CHARACTER_LAST      000061
+
+      NAME                HLEVEL
+      TEXT                Hierarchy level of the SAP segment
+      TYPE                CHARACTER
+      LENGTH              000002
+      FIELD_POS           0006
+      CHARACTER_FIRST     000062
+      CHARACTER_LAST      000063
+
+      NAME                SDATA
+      TEXT                Application data
+      TYPE                CHARACTER
+      LENGTH              001000
+      FIELD_POS           0007
+      CHARACTER_FIRST     000064
+      CHARACTER_LAST      001063
+    END_FIELDS
+  END_DATA_RECORD
+END_RECORD_SECTION
+BEGIN_SEGMENT_SECTION
+  BEGIN_IDOC          DELFOR02
+    BEGIN_SEGMENT       E2EDK09
+      SEGMENTTYPE         E1EDK09
+      LEVEL               01
+      STATUS              MANDATORY
+      BEGIN_FIELDS
+        NAME                VTRNR
+        TEXT                Contract number
+        TYPE                CHARACTER
+        LENGTH              000035
+
+        NAME                BSTDK
+        TEXT                Customer reference date
+        TYPE                CHARACTER
+        LENGTH              000008
+
+        NAME                LABNK
+        TEXT                Current release key of the customer
+        TYPE                CHARACTER
+        LENGTH              000017
+
+        NAME                ABNRA
+        TEXT                Current release key of the customer
+        TYPE                CHARACTER
+        LENGTH              000017
+
+        NAME                ABNRD
+        TEXT                Date of the release
+        TYPE                CHARACTER
+        LENGTH              000008
+      END_FIELDS
+    END_SEGMENT
+    BEGIN_SEGMENT       E2EDKA1
+      SEGMENTTYPE         E1EDKA1
+      LEVEL               02
+      STATUS              MANDATORY
+      BEGIN_FIELDS
+        NAME                PARVW
+        TEXT                Partner role
+        TYPE                CHARACTER
+        LENGTH              000003
+
+        NAME                PARTN
+        TEXT                Partner number
+        TYPE                CHARACTER
+        LENGTH              000017
+
+        NAME                NAME1
+        TEXT                Name 1
+        TYPE                CHARACTER
+        LENGTH              000035
+
+        NAME                STRAS
+        TEXT                Street
+        TYPE                CHARACTER
+        LENGTH              000035
+
+        NAME                ORT01
+        TEXT                City
+        TYPE                CHARACTER
+        LENGTH              000035
+
+        NAME                PSTLZ
+        TEXT                Postal code
+        TYPE                CHARACTER
+        LENGTH              000009
+
+        NAME                LAND1
+        TEXT                Country key
+        TYPE                CHARACTER
+        LENGTH              000003
+
+        NAME                SPRAS
+        TEXT                Language key
+        TYPE                CHARACTER
+        LENGTH              000001
+
+        NAME                SPRAS_ISO
+        TEXT                2-character SAP language code
+        TYPE                CHARACTER
+        LENGTH              000002
+
+        NAME                BNAME
+        TEXT                IDoc user name
+        TYPE                CHARACTER
+        LENGTH              000035
+
+        NAME                PAORG
+        TEXT                IDoc organization code
+        TYPE                CHARACTER
+        LENGTH              000030
+
+        NAME                ORGTX
+        TEXT                IDoc organization code text
+        TYPE                CHARACTER
+        LENGTH              000035
+
+        NAME                PAGRU
+        TEXT                IDoc group code
+        TYPE                CHARACTER
+        LENGTH              000030
+
+        NAME                REGIO
+        TEXT                Region
+        TYPE                CHARACTER
+        LENGTH              000003
+      END_FIELDS
+    END_SEGMENT
+    BEGIN_SEGMENT       E2EDP10
+      SEGMENTTYPE         E1EDP10
+      LEVEL               02
+      STATUS              MANDATORY
+      BEGIN_FIELDS
+        NAME                IDNKD
+        TEXT                Customer material number
+        TYPE                CHARACTER
+        LENGTH              000035
+
+        NAME                VRKME
+        TEXT                Sales unit of measure
+        TYPE                CHARACTER
+        LENGTH              000003
+
+        NAME                KWERK
+        TEXT                Customer plant
+        TYPE                CHARACTER
+        LENGTH              000020
+
+        NAME                KLGOR
+        TEXT                Customer storage location
+        TYPE                CHARACTER
+        LENGTH              000007
+
+        NAME                BELNR
+        TEXT                Delivery note number
+        TYPE                CHARACTER
+        LENGTH              000035
+
+        NAME                LFIMG
+        TEXT                Delivery note quantity
+        TYPE                CHARACTER
+        LENGTH              000015
+
+        NAME                LIDTL
+        TEXT                Date of delivery
+        TYPE                CHARACTER
+        LENGTH              000008
+
+        NAME                AKUBM
+        TEXT                Current cumulative order quantity
+        TYPE                CHARACTER
+        LENGTH              000015
+
+        NAME                AKUEM
+        TEXT                Current cumulative received quantity
+        TYPE                CHARACTER
+        LENGTH              000015
+
+        NAME                ABFDE
+        TEXT                Production release end
+        TYPE                CHARACTER
+        LENGTH              000008
+
+        NAME                ABMDE
+        TEXT                Material release end
+        TYPE                CHARACTER
+        LENGTH              000008
+
+        NAME                ABRBI
+        TEXT                Scheduling agreement release valid to
+        TYPE                CHARACTER
+        LENGTH              000008
+
+        NAME                SCREL
+        TEXT                Schedule Release
+        TYPE                CHARACTER
+        LENGTH              000002
+
+        NAME                IDNLF
+        TEXT                Vendor material number
+        TYPE                CHARACTER
+        LENGTH              000035
+
+        NAME                BSTDK
+        TEXT                Customer reference date
+        TYPE                CHARACTER
+        LENGTH              000008
+
+        NAME                LABNK
+        TEXT                Current release key
+        TYPE                CHARACTER
+        LENGTH              000017
+
+        NAME                ABNRA
+        TEXT                Current release key
+        TYPE                CHARACTER
+        LENGTH              000017
+
+        NAME                ABNRD
+        TEXT                Date of release
+        TYPE                CHARACTER
+        LENGTH              000008
+
+        NAME                POSEX
+        TEXT                Item number
+        TYPE                CHARACTER
+        LENGTH              000006
+      END_FIELDS
+    END_SEGMENT
+    BEGIN_SEGMENT       E2EDP16
+      SEGMENTTYPE         E1EDP16
+      LEVEL               03
+      STATUS              MANDATORY
+      BEGIN_FIELDS
+        NAME                EDATUV
+        TEXT                Schedule line date from
+        TYPE                CHARACTER
+        LENGTH              000008
+
+        NAME                EDATUB
+        TEXT                Schedule line date to
+        TYPE                CHARACTER
+        LENGTH              000008
+
+        NAME                WMENG
+        TEXT                Release quantity
+        TYPE                CHARACTER
+        LENGTH              000015
+
+        NAME                FZABR
+        TEXT                Inbound cumulative quantity
+        TYPE                CHARACTER
+        LENGTH              000015
+      END_FIELDS
+    END_SEGMENT
+  END_IDOC
+END_SEGMENT_SECTION

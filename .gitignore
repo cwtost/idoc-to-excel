@@ -23,6 +23,7 @@ output/
 *.txt
 !examples/*.txt
 !requirements.txt
+!Parser_*.txt
 
 # VS Code
 .vscode/
