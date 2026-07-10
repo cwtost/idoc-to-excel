@@ -304,7 +304,7 @@
 <STAPA2>keinFiltern</STAPA2>
 <STAPA3>keinUmsetzen</STAPA3>
 <STAPA4>keinVersionswandel</STAPA4>
-<STATXT>&,&,&,&.</STATXT>
+<STATXT>&amp;,&amp;,&amp;,&amp;.</STATXT>
 <UNAME>WF-BATCH</UNAME>
 <SEGNUM>000000</SEGNUM></EDI_DS40>
 <EDI_DS40>
