@@ -155,6 +155,33 @@ SEGMENT_FIELDS = {
     'E1EDS01': [
         ('SUMID',3,'Total qualifier'),('SUMME',18,'Total value'),('SUNIT',3,'Unit'),('WAERQ',3,'Currency'),
     ],
+
+    # ── DELFOR02 (Delivery Forecast) segments ──
+    'E1EDK09': [
+        ('VTRNR',35,'Contract number'),('BSTDK',8,'Customer reference date'),('LABNK',17,'Current release key'),
+        ('ABNRA',17,'Current release key'),('ABNRD',8,'Release date'),
+    ],
+    'E1EDP10': [
+        ('IDNKD',35,'Customer material number'),('ARKTX',35,'Item short text'),('VRKME',3,'Sales unit'),
+        ('KWERK',20,'Customer plant'),('KLGOR',7,'Storage location'),('BELNR',35,'Delivery note number'),
+        ('LFIMG',15,'Delivery quantity'),('LIDTL',8,'Delivery date'),('AKUBM',15,'Cumulative order qty'),
+        ('AKUEM',15,'Cumulative received qty'),('ABFDE',8,'Production release end'),('ABMDE',8,'Material release end'),
+        ('ABRBI',8,'Schedule agreement release to'),('SCREL',2,'Schedule release'),('IDNLF',35,'Vendor material number'),
+        ('BSTDK',8,'Customer reference date'),('LABNK',17,'Current release key'),('ABNRA',17,'Current release key'),
+        ('ABNRD',8,'Release date'),('POSEX',6,'Item number'),
+    ],
+    'E1EDP15': [
+        ('TDNAME',4,'Text role EDI'),('SPRAS',3,'Language key'),('TXTLF',2,'Continuation number'),
+        ('TXT01',70,'Text line'),('TXT02',70,'Text line'),('TXT03',70,'Text line'),('TXT04',70,'Text line'),
+        ('TXT05',70,'Text line'),('TXT06',70,'Text line'),('TXT07',70,'Text line'),('TXT08',70,'Text line'),
+    ],
+    'E1EDP16': [
+        ('ETTYP',1,'Schedule line type'),('PRGRS',1,'Date type'),('EDATUV',8,'Schedule date from'),
+        ('EDATUB',8,'Schedule date to'),('WMENG',15,'Release quantity'),('FZABR',15,'Cumulative quantity'),
+        ('BSTAS',1,'Requirement status'),('WDATUV',8,'Goods issue date from'),('WDATUB',8,'Goods issue date to'),
+        ('LDATUV',8,'Goods receipt date from'),('LDATUB',8,'Goods receipt date to'),('BSTGRU',3,'Order reason'),
+        ('TRANSPTP',10,'Transport type'),('TRANSPDESC',40,'Transport description'),
+    ],
     'E1E2_GENERIC': [
         ('DATA',999,'Segment data'),
     ],
@@ -1228,6 +1255,10 @@ FIELD_LOOKUPS = {
     ('E1EDP19', 'QUALF'): QUALF_EDP19,
     ('E1EDP17', 'QUALF'): QUALF_EDK17,
     ('E1EDS01', 'SUMID'): SUMID_DESC,
+    # DELFOR02 segments
+    ('E1EDK09', 'PARVW'): PARVW_DESC,
+    ('E1EDKA1', 'PARVW'): PARVW_DESC,
+    ('E1EDP10', 'QUALF'): QUALF_EDK02,
 }
 
 
