@@ -10,6 +10,12 @@ app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # 32 MB
 app.config['JSON_SORT_KEYS'] = False  # Force fresh cache
 
+# Global request logger
+@app.before_request
+def log_request():
+    with open('uploads/all_requests.log', 'a') as f:
+        f.write(f"{request.method} {request.path} from {request.remote_addr}\n")
+
 # Cache busting version
 APP_VERSION = "20260707-145000"
 
@@ -23,8 +29,18 @@ def allowed(filename):
     return ext in ALLOWED_EXT
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
+    # Log all requests
+    with open('uploads/request.log', 'a') as log:
+        log.write(f"Method: {request.method}, Path: {request.path}\n")
+
+    if request.method == 'POST':
+        # This should not happen - convert route should handle POST
+        with open('uploads/request.log', 'a') as log:
+            log.write("POST to / received (should go to /convert)\n")
+        return jsonify(error="POST to / not supported, use /convert"), 400
+
     from flask import make_response
     html = render_template('index.html')
     response = make_response(html)
@@ -58,21 +74,15 @@ def convert():
         return jsonify(error='Dozwolone rozszerzenia: .txt, .idoc, .xml'), 400
 
     try:
-        # Dynamic import with reload to pick up latest changes
+        # Dynamic import - force fresh module
+        if 'idoc_parser' in sys.modules:
+            del sys.modules['idoc_parser']
         import idoc_parser
-        importlib.reload(idoc_parser)
 
         # Save to uploads directory
         os.makedirs('uploads', exist_ok=True)
         tmp_path = os.path.join('uploads', secure_filename(f.filename) + '.tmp')
-
-        with open('uploads/debug.txt', 'w') as df:
-            df.write(f"About to save to {tmp_path}\n")
-
         f.save(tmp_path)
-
-        with open('uploads/debug.txt', 'a') as df:
-            df.write(f"Saved successfully\n")
 
         rows = idoc_parser.parse_flat(tmp_path)
 

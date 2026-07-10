@@ -1043,25 +1043,19 @@ def parse_xml(filepath):
 def parse_flat(filepath):
     """Parse IDoc file (TXT or XML). Auto-detects format."""
     with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
-        content = f.read(100)
+        content = f.read(200)
 
-    # Auto-detect format (remove BOM if present)
-    content_stripped = content.lstrip('﻿').strip()
+    # Auto-detect format - check for ANY XML indicator
+    is_xml = '<?xml' in content or '<DELFOR' in content or '<IDOC' in content or '<ORDERS' in content or (content.strip().startswith('<') and '>' in content)
 
-    # Debug - write to file to bypass any buffering
-    with open('uploads/debug_parse.txt', 'a') as df:
-        df.write(f"content_stripped[:50] = {repr(content_stripped[:50])}\n")
-        df.write(f"startswith(<DELFOR) = {content_stripped.startswith('<DELFOR')}\n")
+    # Save debug log
+    with open('uploads/parse_flat_debug.log', 'a') as log:
+        log.write(f"is_xml={is_xml}, content_preview={repr(content[:60])}\n")
 
-    if content_stripped.startswith('<?xml') or content_stripped.startswith('<ORDERS') or content_stripped.startswith('<IDOC') or content_stripped.startswith('<DELFOR'):
-        with open('uploads/debug_parse.txt', 'a') as df:
-            df.write("Calling parse_xml() via startswith\n")
-        return parse_xml(filepath)
-
-    if content_stripped.startswith('<'):
-        # If it looks like XML but not recognized, still try XML
-        with open('uploads/debug_parse.txt', 'a') as df:
-            df.write("Calling parse_xml() via <\n")
+    if is_xml:
+        # This is XML
+        with open('uploads/parse_flat_debug.log', 'a') as log:
+            log.write("Calling parse_xml()\n")
         return parse_xml(filepath)
 
     # Parse as flat-file (TXT)
