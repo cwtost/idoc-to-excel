@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="1.0">
+ <xsd:element name="ZDELFOR02_4PL">
+  <xsd:annotation>
+   <xsd:documentation>DELFOR02 extension for 4PL (Incoterms)</xsd:documentation>
+  </xsd:annotation>
+  <xsd:complexType>
+   <xsd:sequence>
+    <xsd:element name="IDOC">
+     <xsd:complexType>
+      <xsd:sequence>
+       <xsd:element name="EDI_DC40"/>
+       <xsd:element name="E1EDK09">
+        <xsd:complexType>
+         <xsd:sequence>
+          <xsd:element name="VTRNR" minOccurs="0" type="xsd:string"/>
+          <xsd:element name="BSTDK" minOccurs="0" type="xsd:string"/>
+          <xsd:element name="LABNK" minOccurs="0" type="xsd:string"/>
+          <xsd:element name="ABNRA" minOccurs="0" type="xsd:string"/>
+          <xsd:element name="ABNRD" minOccurs="0" type="xsd:string"/>
+          <xsd:element name="E1EDKA1" minOccurs="0" maxOccurs="unbounded">
+           <xsd:complexType>
+            <xsd:sequence>
+             <xsd:element name="PARVW" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="PARTN" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="NAME1" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="STRAS" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="ORT01" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="PSTLZ" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="LAND1" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="SPRAS" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="SPRAS_ISO" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="BNAME" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="PAORG" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="ORGTX" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="PAGRU" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="REGIO" minOccurs="0" type="xsd:string"/>
+            </xsd:sequence>
+           </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="E1EDP10" minOccurs="0" maxOccurs="unbounded">
+           <xsd:complexType>
+            <xsd:sequence>
+             <xsd:element name="IDNKD" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="VRKME" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="KWERK" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="KLGOR" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="BELNR" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="LFIMG" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="LIDTL" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="AKUBM" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="AKUEM" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="ABFDE" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="ABMDE" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="ABRBI" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="SCREL" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="IDNLF" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="BSTDK" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="LABNK" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="ABNRA" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="ABNRD" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="POSEX" minOccurs="0" type="xsd:string"/>
+             <xsd:element name="E1EDP15" minOccurs="0" maxOccurs="unbounded">
+              <xsd:complexType>
+               <xsd:sequence>
+                <xsd:element name="TDNAME" minOccurs="0" type="xsd:string"/>
+                <xsd:element name="SPRAS" minOccurs="0" type="xsd:string"/>
+                <xsd:element name="TXTLF" minOccurs="0" type="xsd:string"/>
+                <xsd:element name="TXT01" minOccurs="0" type="xsd:string"/>
+               </xsd:sequence>
+              </xsd:complexType>
+             </xsd:element>
+             <xsd:element name="E1EDP16" minOccurs="0" maxOccurs="unbounded">
+              <xsd:complexType>
+               <xsd:sequence>
+                <xsd:element name="EDATUV" minOccurs="0" type="xsd:string"/>
+                <xsd:element name="EDATUB" minOccurs="0" type="xsd:string"/>
+                <xsd:element name="WMENG" minOccurs="0" type="xsd:string"/>
+                <xsd:element name="FZABR" minOccurs="0" type="xsd:string"/>
+               </xsd:sequence>
+              </xsd:complexType>
+             </xsd:element>
+            </xsd:sequence>
+           </xsd:complexType>
+          </xsd:element>
+         </xsd:sequence>
+        </xsd:complexType>
+       </xsd:element>
+       <xsd:element name="EDI_DS40" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+     </xsd:complexType>
+    </xsd:element>
+   </xsd:sequence>
+  </xsd:complexType>
+ </xsd:element>
+</xsd:schema>
