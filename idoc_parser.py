@@ -966,11 +966,13 @@ def parse_xml(filepath):
 
     def parse_segment(elem, hlevel=0):
         """Recursively parse segment and its nested segments."""
-        if 'SEGMENT' not in elem.attrib:
-            return
-
         tag_name = elem.tag
         if not tag_name or tag_name.startswith('_'):
+            return
+
+        # Check if this is a segment (has SEGMENT attribute OR is known segment like E1EDK09, EDI_DC40)
+        is_segment = 'SEGMENT' in elem.attrib or tag_name.startswith('E1') or tag_name.startswith('E2') or tag_name.startswith('EDI_')
+        if not is_segment:
             return
 
         seg_name = tag_name
@@ -1020,15 +1022,20 @@ def parse_xml(filepath):
         data_output = ''.join(data_items)[:2000]
         rows.append((seg_name, hlevel, data_output))
 
-        # Process nested segments (children with SEGMENT attribute)
+        # Process nested segments (children with SEGMENT attribute OR known segment patterns)
         for child in elem:
-            if child.tag and not child.tag.startswith('_') and 'SEGMENT' in child.attrib:
-                parse_segment(child, hlevel + 1)
+            if child.tag and not child.tag.startswith('_'):
+                is_nested_segment = 'SEGMENT' in child.attrib or child.tag.startswith('E1') or child.tag.startswith('E2') or child.tag.startswith('EDI_')
+                if is_nested_segment and child.tag != seg_name:  # Avoid re-processing parent
+                    parse_segment(child, hlevel + 1)
 
     # Process direct children of IDOC (main segments)
     for elem in idoc_elem:
-        if elem.tag and not elem.tag.startswith('_') and 'SEGMENT' in elem.attrib:
-            parse_segment(elem, hlevel=0)
+        if elem.tag and not elem.tag.startswith('_'):
+            # Check if this is a segment (has SEGMENT attr OR is known segment pattern)
+            is_segment = 'SEGMENT' in elem.attrib or elem.tag.startswith('E1') or elem.tag.startswith('E2') or elem.tag.startswith('EDI_')
+            if is_segment:
+                parse_segment(elem, hlevel=0)
 
     return rows if rows else []
 
