@@ -1039,7 +1039,7 @@ def parse_flat(filepath):
         content = f.read(100)
 
     # Auto-detect format
-    if content.strip().startswith('<?xml') or content.strip().startswith('<ORDERS') or content.strip().startswith('<IDOC'):
+    if content.strip().startswith('<?xml') or content.strip().startswith('<ORDERS') or content.strip().startswith('<IDOC') or content.strip().startswith('<DELFOR'):
         return parse_xml(filepath)
 
     # Parse as flat-file (TXT)
