@@ -4,12 +4,7 @@ import base64
 import tempfile
 import sys
 from flask import Flask, render_template, request, jsonify, Response
-
-# Force reload of idoc_parser to pick up latest changes
-if 'idoc_parser' in sys.modules:
-    del sys.modules['idoc_parser']
-
-from idoc_parser import parse_flat, build_excel, build_preview_data
+import importlib
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # 32 MB
@@ -50,6 +45,9 @@ def debug_info():
 
 @app.route('/convert', methods=['POST'])
 def convert():
+    with open('uploads/endpoint_called.txt', 'w') as df:
+        df.write('convert endpoint was called\n')
+
     if 'idoc_file' not in request.files:
         return jsonify(error='Nie przesłano pliku.'), 400
 
@@ -60,17 +58,37 @@ def convert():
         return jsonify(error='Dozwolone rozszerzenia: .txt, .idoc, .xml'), 400
 
     try:
-        with tempfile.NamedTemporaryFile(suffix='.txt', delete=False) as tmp:
-            f.save(tmp.name)
-            tmp_path = tmp.name
+        # Dynamic import with reload to pick up latest changes
+        import idoc_parser
+        importlib.reload(idoc_parser)
 
-        rows = parse_flat(tmp_path)
+        # Save to uploads directory
+        os.makedirs('uploads', exist_ok=True)
+        tmp_path = os.path.join('uploads', secure_filename(f.filename) + '.tmp')
 
-        # DEBUG: Check E1EDK14 data
-        for seg_name, hlevel, data in rows:
-            if seg_name == 'E1EDK14':
-                print(f"DEBUG E1EDK14: data_len={len(data)} first 40 chars={repr(data[:40])}")
-                break
+        with open('uploads/debug.txt', 'w') as df:
+            df.write(f"About to save to {tmp_path}\n")
+
+        f.save(tmp_path)
+
+        with open('uploads/debug.txt', 'a') as df:
+            df.write(f"Saved successfully\n")
+
+        rows = idoc_parser.parse_flat(tmp_path)
+
+        # DEBUG: Show first few rows
+        print(f"\n=== PARSER DEBUG ===")
+        print(f"Total rows: {len(rows)}")
+        if rows:
+            print(f"First 3 rows:")
+            for i, (seg, hlevel, data) in enumerate(rows[:3]):
+                print(f"  {i+1}. seg='{seg}' hlevel={hlevel} data_len={len(data)}")
+                fields = extract_fields(seg, data)
+                print(f"     fields: {len(fields)} field(s)")
+                if fields:
+                    fname, flen, fdesc, val = fields[0]
+                    print(f"     first field: {fname}={repr(val)}")
+        print(f"==================\n")
 
         if not rows:
             os.unlink(tmp_path)

@@ -1045,8 +1045,23 @@ def parse_flat(filepath):
     with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
         content = f.read(100)
 
-    # Auto-detect format
-    if content.strip().startswith('<?xml') or content.strip().startswith('<ORDERS') or content.strip().startswith('<IDOC') or content.strip().startswith('<DELFOR'):
+    # Auto-detect format (remove BOM if present)
+    content_stripped = content.lstrip('﻿').strip()
+
+    # Debug - write to file to bypass any buffering
+    with open('uploads/debug_parse.txt', 'a') as df:
+        df.write(f"content_stripped[:50] = {repr(content_stripped[:50])}\n")
+        df.write(f"startswith(<DELFOR) = {content_stripped.startswith('<DELFOR')}\n")
+
+    if content_stripped.startswith('<?xml') or content_stripped.startswith('<ORDERS') or content_stripped.startswith('<IDOC') or content_stripped.startswith('<DELFOR'):
+        with open('uploads/debug_parse.txt', 'a') as df:
+            df.write("Calling parse_xml() via startswith\n")
+        return parse_xml(filepath)
+
+    if content_stripped.startswith('<'):
+        # If it looks like XML but not recognized, still try XML
+        with open('uploads/debug_parse.txt', 'a') as df:
+            df.write("Calling parse_xml() via <\n")
         return parse_xml(filepath)
 
     # Parse as flat-file (TXT)

@@ -1,0 +1,77 @@
+BEGIN_RECORD_SECTION
+  BEGIN_CONTROL_RECORD
+    BEGIN_FIELDS
+      NAME                TABNAM
+      TEXT                Name der Tabellenstruktur
+      TYPE                CHARACTER
+      LENGTH              000010
+      FIELD_POS           0001
+      CHARACTER_FIRST     000001
+      CHARACTER_LAST      000010
+
+      NAME                MANDT
+      TEXT                Mandant
+      TYPE                CHARACTER
+      LENGTH              000003
+      FIELD_POS           0002
+      CHARACTER_FIRST     000011
+      CHARACTER_LAST      000013
+
+      NAME                DOCNUM
+      TEXT                Nummer des IDocs
+      TYPE                CHARACTER
+      LENGTH              000016
+      FIELD_POS           0003
+      CHARACTER_FIRST     000014
+      CHARACTER_LAST      000029
+
+      NAME                DOCREL
+      TEXT                SAP-Release des IDocs
+      TYPE                CHARACTER
+      LENGTH              000004
+      FIELD_POS           0004
+      CHARACTER_FIRST     000030
+      CHARACTER_LAST      000033
+
+      NAME                STATUS
+      TEXT                Status des IDocs
+      TYPE                CHARACTER
+      LENGTH              000002
+      FIELD_POS           0005
+      CHARACTER_FIRST     000034
+      CHARACTER_LAST      000035
+
+      NAME                DIRECT
+      TEXT                Richtung
+      TYPE                CHARACTER
+      LENGTH              000001
+      FIELD_POS           0006
+      CHARACTER_FIRST     000036
+      CHARACTER_LAST      000036
+
+      NAME                OUTMOD
+      TEXT                Ausgabemodus
+      TYPE                CHARACTER
+      LENGTH              000001
+      FIELD_POS           0007
+      CHARACTER_FIRST     000037
+      CHARACTER_LAST      000037
+
+      NAME                IDOCTYP
+      TEXT                Name des Basistyps
+      TYPE                CHARACTER
+      LENGTH              000030
+      FIELD_POS           0010
+      CHARACTER_FIRST     000040
+      CHARACTER_LAST      000069
+
+      NAME                MESTYP
+      TEXT                Nachrichtentyp
+      TYPE                CHARACTER
+      LENGTH              000030
+      FIELD_POS           0012
+      CHARACTER_FIRST     000100
+      CHARACTER_LAST      000129
+    END_FIELDS
+  END_CONTROL_RECORD
+END_RECORD_SECTION
