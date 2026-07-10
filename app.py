@@ -94,7 +94,7 @@ def convert():
             print(f"First 3 rows:")
             for i, (seg, hlevel, data) in enumerate(rows[:3]):
                 print(f"  {i+1}. seg='{seg}' hlevel={hlevel} data_len={len(data)}")
-                fields = extract_fields(seg, data)
+                fields = idoc_parser.extract_fields(seg, data)
                 print(f"     fields: {len(fields)} field(s)")
                 if fields:
                     fname, flen, fdesc, val = fields[0]
@@ -106,11 +106,11 @@ def convert():
             return jsonify(error='Plik jest pusty lub nie zawiera danych IDoc.'), 400
 
         buf = io.BytesIO()
-        build_excel(rows, buf)
+        idoc_parser.build_excel(rows, buf)
         buf.seek(0)
         xlsx_b64 = base64.b64encode(buf.read()).decode('ascii')
 
-        preview = build_preview_data(rows)
+        preview = idoc_parser.build_preview_data(rows)
         os.unlink(tmp_path)
 
         base_name = os.path.splitext(f.filename)[0]
