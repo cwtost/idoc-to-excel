@@ -4,6 +4,7 @@ import base64
 import tempfile
 import sys
 from flask import Flask, render_template, request, jsonify, Response
+from werkzeug.utils import secure_filename
 import importlib
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
